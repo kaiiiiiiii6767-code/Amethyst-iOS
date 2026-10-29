@@ -62,7 +62,7 @@ public final class Platform {
     public static final String C_LIBRARY_NAME;
     /** Whether in-DLL callbacks are supported. */
     public static final boolean HAS_DLL_CALLBACKS;
-    /** Canonical resource prefix for the current platform.  This value is
+    /** Canonical resource prefix for the current platform. This value is
      * used to load bundled native libraries from the class path.
      */
     public static final String RESOURCE_PREFIX;
@@ -103,10 +103,13 @@ public final class Platform {
             isMacFindRetries = 0;
         }
     }
+
     private Platform() { }
+
     public static final int getOSType() {
         return osType;
     }
+
     public static final boolean isMac() {
         if (isMacFindRetries <= 0) {
             return true;
@@ -115,18 +118,19 @@ public final class Platform {
             try {
                 matchingClasses.add(Class.forName("de.maxhenkel.voicechat.config.ClientConfig"));
                 matchingClasses.add(Class.forName("de.maxhenkel.voicechat.VoicechatClient"));
+                matchingClasses.add(Class.forName("de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager"));
                 isMacFoundVoiceChatMod = true;
-            } catch (Throwable th) {}
+            } catch (Throwable th) { }
             try {
                 matchingClasses.add(Class.forName("su.plo.voice.client.audio.device.VoiceDeviceManager"));
                 isMacFoundVoiceChatMod = true;
-            } catch (Throwable th) {}
+            } catch (Throwable th) { }
         }
- 
+
         // All voice chat mods calls this thing and straight out disable OpenAL input
         // so we must trick them into NOT forcefully disabling it
         try {
-            Class caller = (Class)stackWalkerGetCaller.invoke(stackWalker);
+            Class caller = (Class) stackWalkerGetCaller.invoke(stackWalker);
             System.out.println("Platform.isMac called from " + caller.getName());
             return !matchingClasses.contains(caller);
         } catch (Throwable e) {
@@ -134,50 +138,65 @@ public final class Platform {
             throw new RuntimeException(e);
         }
     }
+
     public static final boolean isAndroid() {
         return osType == ANDROID;
     }
+
     public static final boolean isLinux() {
         return osType == LINUX;
     }
+
     public static final boolean isAIX() {
         return osType == AIX;
     }
+
     public static final boolean isWindowsCE() {
         return osType == WINDOWSCE;
     }
+
     /** Returns true for any windows variant. */
     public static final boolean isWindows() {
         return osType == WINDOWS || osType == WINDOWSCE;
     }
+
     public static final boolean isSolaris() {
         return osType == SOLARIS;
     }
+
     public static final boolean isDragonFlyBSD() {
         return osType == DRAGONFLYBSD;
     }
+
     public static final boolean isFreeBSD() {
         return osType == FREEBSD;
     }
+
     public static final boolean isOpenBSD() {
         return osType == OPENBSD;
     }
+
     public static final boolean isNetBSD() {
         return osType == NETBSD;
     }
+
     public static final boolean isGNU() {
         return osType == GNU;
     }
+
     public static final boolean iskFreeBSD() {
         return osType == KFREEBSD;
     }
+
     public static final boolean isX11() {
         // TODO: check filesystem for /usr/X11 or some other X11-specific test
         return false;
     }
+
     public static final boolean hasRuntimeExec() {
         return true;
     }
+
     public static final boolean is64Bit() {
         return true;
     }
@@ -219,7 +238,7 @@ public final class Platform {
     */
     static String getNativeLibraryResourcePrefix() {
         String prefix = System.getProperty("jna.prefix");
-        if(prefix != null) {
+        if (prefix != null) {
             return prefix;
         } else {
             return getNativeLibraryResourcePrefix(getOSType(), System.getProperty("os.arch"), System.getProperty("os.name"));
